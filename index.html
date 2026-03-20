@@ -12,6 +12,7 @@
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-192.svg">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231a0f06'/%3E%3Crect x='4' y='18' width='24' height='3' rx='1' fill='%235c3d1e'/%3E%3Crect x='6' y='10' width='4' height='8' rx='1' fill='%233a1a5c'/%3E%3Crect x='12' y='8' width='5' height='10' rx='1' fill='%235c1a1a'/%3E%3Crect x='19' y='11' width='4' height='7' rx='1' fill='%231a3a5c'/%3E%3Cellipse cx='16' cy='5' rx='3' ry='4' fill='%23ff9900' opacity='0.9'/%3E%3Cellipse cx='16' cy='6' rx='1.5' ry='2.5' fill='%23fff' opacity='0.8'/%3E%3Crect x='15' y='8' width='2' height='3' rx='1' fill='%23f0e6c8'/%3E%3C/svg%3E">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,700&family=IM+Fell+English:ital@0;1&family=Lato:wght@300;400&family=Cinzel:wght@400;600&display=swap" rel="stylesheet">
 <style>
 body {
@@ -208,7 +209,8 @@ textarea.inp{resize:vertical;min-height:72px;}
 @media(max-width:500px){.modal-top{grid-template-columns:1fr;}}
 .modal-cover{overflow:hidden;border-radius:8px 0 0 0;}
 .modal-cover img{width:100%;height:100%;object-fit:cover;min-height:220px;}
-.modal-cover-ph{width:100%;min-height:220px;background:linear-gradient(145deg,var(--bg2),var(--bg3));display:flex;align-items:center;justify-content:center;font-size:4rem;}
+.modal-cover-ph{width:100%;min-height:220px;background:linear-gradient(145deg,var(--bg2),var(--bg3));display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:3rem;gap:8px;}
+.modal-cover-ph span{font-family:'IM Fell English',serif;font-style:italic;font-size:0.7rem;color:var(--gold);opacity:0.5;letter-spacing:2px;text-align:center;padding:0 12px;}
 .modal-hdr{padding:20px 24px 16px;border-bottom:1px solid rgba(201,150,58,0.14);}
 .modal-title{font-family:'Playfair Display',serif;font-size:1.4rem;color:var(--parchment);margin-bottom:4px;line-height:1.3;}
 .modal-author{font-family:'IM Fell English',serif;font-style:italic;color:var(--gold);font-size:0.95rem;margin-bottom:12px;}
@@ -292,6 +294,13 @@ textarea.inp{resize:vertical;min-height:72px;}
   .tbtn{width:22px;height:22px;}
   .fgrid{grid-template-columns:1fr !important;}
 }
+
+.user-bar{display:flex;align-items:center;gap:10px;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:1px;color:var(--gold);opacity:0.7;}
+.user-bar span{max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.btn-signout{padding:4px 12px;border-radius:20px;border:1px solid rgba(201,150,58,0.3);background:transparent;color:var(--gold);font-size:0.6rem;font-family:'Cinzel',serif;letter-spacing:1px;cursor:pointer;transition:all 0.2s;}
+.btn-signout:hover{background:rgba(201,150,58,0.1);}
+.sync-badge{font-size:0.6rem;padding:2px 8px;border-radius:10px;background:rgba(112,232,160,0.15);color:#70e8a0;border:1px solid rgba(112,232,160,0.25);font-family:'Cinzel',serif;letter-spacing:1px;}
+.sync-badge.syncing{background:rgba(201,150,58,0.15);color:var(--gold2);border-color:rgba(201,150,58,0.25);}
 </style>
 
 <!-- =====================================================
@@ -348,6 +357,7 @@ textarea.inp{resize:vertical;min-height:72px;}
 </div>
 <header>
   <div class="logo">PageMood<sub>✦ my enchanted library</sub></div>
+  <div class="user-bar" id="user-bar" style="display:none"><span id="user-email"></span><span class="sync-badge" id="sync-badge">✦ synced</span><button class="btn-signout" onclick="signOut()">Sign Out</button></div>
   <div class="themes">
     <button class="tbtn t-vintage active" id="btn-" onclick="setTheme('',this)" title="Vintage"></button>
     <button class="tbtn t-dark" id="btn-dark" onclick="setTheme('dark',this)" title="Midnight"></button>
@@ -699,7 +709,7 @@ function clearSearch(){
 function addBook(){
   const t=document.getElementById('ft').value.trim();if(!t){toast('Please enter a title 🌙');return;}
   books.unshift({id:Date.now(),title:t,author:document.getElementById('fa').value.trim(),shelf:document.getElementById('fs').value,rating,moods:[...moods],notes:document.getElementById('fn').value.trim(),cover:document.getElementById('fc').value||'',images:[],date:new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})});
-  save();clearForm();toast('Added to your library! 📚✨');document.querySelectorAll('.tab')[0].click();
+  save();const nb=books[0];saveBookToCloud(nb);clearForm();toast('Added to your library! 📚✨');document.querySelectorAll('.tab')[0].click();
 }
 function clearForm(){
   ['ft','fa','fn','fc'].forEach(i=>document.getElementById(i).value='');
@@ -707,7 +717,7 @@ function clearForm(){
   document.querySelectorAll('#si span').forEach(s=>s.classList.remove('lit'));
   document.querySelectorAll('#mt .mood').forEach(m=>{if(m.dataset.custom)m.remove();else m.classList.remove('on');});
 }
-function deleteBook(id,e){e.stopPropagation();if(!confirm('Remove from library?'))return;books=books.filter(b=>b.id!==id);save();renderShelves();toast('Removed 🌙');}
+function deleteBook(id,e){e.stopPropagation();if(!confirm('Remove from library?'))return;const b=books.find(x=>x.id===id);if(b)deleteBookFromCloud(b);books=books.filter(b=>b.id!==id);save();renderShelves();toast('Removed 🌙');}
 
 // SHELVES
 const SC=[['#5c1a1a','#8b2a2a'],['#1a3a5c','#2a5c8b'],['#1a5c2a','#2a8b3a'],['#3a1a5c','#5c2a8b'],['#5c3a1a','#8b5c2a'],['#1a4a4a','#2a7a7a'],['#4a1a3a','#7a2a5c'],['#3a3a1a','#6a6a2a'],['#1a1a4a','#2a2a7a'],['#4a2a1a','#7a4a2a']];
@@ -1112,6 +1122,109 @@ if('serviceWorker' in navigator){
   });
 }
 
+
+// ===== SUPABASE CLOUD SYNC =====
+const SUPA_URL='https://gcrwxjsxshkqfepuemzs.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdjcnd4anN4c2hrcWZlcHVlbXpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5OTA4NTgsImV4cCI6MjA4OTU2Njg1OH0.RPm2oVlNvSjC4ICw1yQNki6_RW4T3FQZHrQP-Eg6jDM';
+const supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+let currentUser=null;
+
+async function initAuth(){
+  const{data:{session}}=await supa.auth.getSession();
+  if(session){
+    currentUser=session.user;
+    showUserBar(session.user.email);
+    await loadBooksFromCloud();
+  } else {
+    // Not logged in — use local storage (guest mode)
+    showGuestBar();
+  }
+  supa.auth.onAuthStateChange(async(_,session)=>{
+    if(session){
+      currentUser=session.user;
+      showUserBar(session.user.email);
+      await loadBooksFromCloud();
+    } else {
+      currentUser=null;
+    }
+  });
+}
+
+function showUserBar(email){
+  const bar=document.getElementById('user-bar');
+  bar.style.display='flex';
+  document.getElementById('user-email').textContent='🕯️ '+email;
+}
+
+function showGuestBar(){
+  const bar=document.getElementById('user-bar');
+  bar.style.display='flex';
+  document.getElementById('user-email').innerHTML='<a href="auth.html" style="color:var(--gold);text-decoration:none;font-family:Cinzel,serif;font-size:0.62rem;letter-spacing:1px;">✦ Sign in to sync</a>';
+  document.getElementById('sync-badge').style.display='none';
+  document.querySelector('.btn-signout').style.display='none';
+}
+
+async function signOut(){
+  await supa.auth.signOut();
+  currentUser=null;
+  toast('Signed out 🌙');
+  setTimeout(()=>window.location.href='auth.html',800);
+}
+
+function setSyncBadge(state){
+  const b=document.getElementById('sync-badge');
+  if(!b)return;
+  if(state==='syncing'){b.textContent='↻ syncing';b.className='sync-badge syncing';}
+  else if(state==='synced'){b.textContent='✦ synced';b.className='sync-badge';}
+  else{b.textContent='⚠ offline';b.className='sync-badge syncing';}
+}
+
+async function loadBooksFromCloud(){
+  if(!currentUser)return;
+  setSyncBadge('syncing');
+  try{
+    const{data,error}=await supa.from('books').select('*').eq('user_id',currentUser.id).order('created_at',{ascending:false});
+    if(error)throw error;
+    if(data&&data.length){
+      books=data.map(b=>({
+        id:b.id,title:b.title,author:b.author||'',shelf:b.shelf||'tbr',
+        rating:b.rating||0,moods:b.moods||[],notes:b.notes||'',
+        cover:b.cover||'',images:b.images||[],date:b.date_added||'',
+        cloud_id:b.id
+      }));
+      save();
+    }
+    setSyncBadge('synced');
+    renderShelves();
+  }catch(e){setSyncBadge('offline');console.log('Cloud load failed:',e);}
+}
+
+async function saveBookToCloud(book){
+  if(!currentUser)return;
+  setSyncBadge('syncing');
+  try{
+    const payload={
+      user_id:currentUser.id,title:book.title,author:book.author,
+      shelf:book.shelf,rating:book.rating,moods:book.moods,
+      notes:book.notes,cover:book.cover,images:book.images||[],
+      date_added:book.date
+    };
+    if(book.cloud_id){
+      await supa.from('books').update(payload).eq('id',book.cloud_id);
+    } else {
+      const{data}=await supa.from('books').insert(payload).select().single();
+      if(data){book.cloud_id=data.id;save();}
+    }
+    setSyncBadge('synced');
+  }catch(e){setSyncBadge('offline');}
+}
+
+async function deleteBookFromCloud(book){
+  if(!currentUser||!book.cloud_id)return;
+  try{await supa.from('books').delete().eq('id',book.cloud_id);}catch(e){}
+}
+
+initAuth();
 renderShelves();
 </script>
 </body>
