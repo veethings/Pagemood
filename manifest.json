@@ -2,7 +2,8 @@
   "name": "PageMood — My Enchanted Library",
   "short_name": "PageMood",
   "description": "A beautiful vintage book tracker for BookTok readers",
-  "start_url": "/index.html",
+  "start_url": "/Pagemood/",
+  "scope": "/Pagemood/",
   "display": "standalone",
   "background_color": "#0d0703",
   "theme_color": "#1a0f06",
@@ -14,7 +15,7 @@
   ],
   "screenshots": [],
   "shortcuts": [
-    { "name": "Add Book", "url": "/index.html#add", "description": "Add a new book" },
-    { "name": "My Library", "url": "/index.html#shelf", "description": "View my shelves" }
+    { "name": "Add Book", "url": "/Pagemood/index.html#add", "description": "Add a new book" },
+    { "name": "My Library", "url": "/Pagemood/index.html#shelf", "description": "View my shelves" }
   ]
 }
