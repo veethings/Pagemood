@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PageMood — Sign In</title>
+<meta name="theme-color" content="#1a0f06">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231a0f06'/%3E%3Cellipse cx='16' cy='5' rx='3' ry='4' fill='%23ff9900' opacity='0.9'/%3E%3Crect x='15' y='8' width='2' height='3' rx='1' fill='%23f0e6c8'/%3E%3Crect x='4' y='18' width='24' height='3' rx='1' fill='%235c3d1e'/%3E%3Crect x='6' y='10' width='4' height='8' rx='1' fill='%233a1a5c'/%3E%3Crect x='12' y='8' width='5' height='10' rx='1' fill='%235c1a1a'/%3E%3Crect x='19' y='11' width='4' height='7' rx='1' fill='%231a3a5c'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Lato:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#0a0602;color:#f0e6cc;font-family:'Lato',sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+#particles{position:fixed;inset:0;pointer-events:none;z-index:0;}
+.dust{position:absolute;border-radius:50%;background:#e8c060;animation:floatDust linear infinite;opacity:0;}
+@keyframes floatDust{0%{transform:translateY(100vh);opacity:0;}10%{opacity:0.4;}90%{opacity:0.1;}100%{transform:translateY(-50px) translateX(40px);opacity:0;}}
+.vine-side{position:fixed;top:0;width:65px;height:100%;pointer-events:none;z-index:1;overflow:hidden;}
+.vine-side.left{left:0;}.vine-side.right{right:0;transform:scaleX(-1);}
+.vine-side svg{width:100%;height:100%;}
+@keyframes vs{0%,100%{transform:translateX(0);}50%{transform:translateX(3px);}}
+.vs{animation:vs 8s ease-in-out infinite;}
+.candles-top{position:fixed;top:0;left:0;right:0;display:flex;align-items:flex-end;gap:18px;padding:8px 24px;background:linear-gradient(180deg,rgba(10,6,2,0.9),transparent);z-index:10;}
+.c-wrap{display:flex;flex-direction:column;align-items:center;position:relative;}
+.c-glow{position:absolute;width:44px;height:44px;background:radial-gradient(circle,rgba(245,180,40,0.32) 0%,transparent 70%);border-radius:50%;top:-10px;left:50%;transform:translateX(-50%);animation:glowP 2s ease-in-out infinite;pointer-events:none;}
+@keyframes glowP{0%,100%{opacity:0.5;transform:translateX(-50%) scale(1);}50%{opacity:0.9;transform:translateX(-50%) scale(1.25);}}
+.c-flame{width:10px;height:17px;background:radial-gradient(ellipse at 50% 85%,#fff 0%,#ffe566 28%,#ff9900 62%,transparent 100%);border-radius:50% 50% 35% 35%;filter:blur(0.3px);animation:flicker 1.8s ease-in-out infinite;}
+@keyframes flicker{0%,100%{transform:scaleX(1) rotate(-1.5deg);}20%{transform:scaleX(0.82) rotate(2.5deg);}50%{transform:scaleX(1.1) rotate(-1.5deg);}75%{transform:scaleX(0.88) rotate(2deg);}}
+.c-wrap:nth-child(2) .c-flame{animation-delay:.3s;animation-duration:2.1s;}
+.c-wrap:nth-child(3) .c-flame{animation-delay:.7s;animation-duration:1.6s;}
+.c-wick{width:2px;height:5px;background:#1a0f00;margin:0 auto;}
+.c-body{border-radius:2px;background:linear-gradient(180deg,#f0e6c8,#d4c090);}
+.candle-label{font-family:'IM Fell English',serif;font-style:italic;font-size:0.72rem;color:#c9963a;opacity:0.55;padding-left:8px;align-self:center;}
+.auth-wrap{position:relative;z-index:5;width:100%;max-width:420px;padding:20px;}
+.auth-card{background:linear-gradient(145deg,#1a0f06,#0d0703);border:1px solid rgba(201,150,58,0.3);border-radius:10px;padding:40px 36px;box-shadow:0 20px 60px rgba(0,0,0,0.8);}
+.auth-top{text-align:center;margin-bottom:28px;}
+.auth-logo{font-family:'Cinzel',serif;font-size:2.2rem;color:#e8c060;letter-spacing:4px;margin-bottom:6px;}
+.auth-tagline{font-family:'IM Fell English',serif;font-style:italic;font-size:0.82rem;color:#c9963a;opacity:0.6;letter-spacing:2px;}
+.auth-tabs{display:flex;margin-bottom:24px;border:1px solid rgba(201,150,58,0.2);border-radius:6px;overflow:hidden;position:relative;z-index:10;}
+.auth-tab{flex:1;padding:11px;font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:1.5px;border:none;background:transparent;color:#9a7040;cursor:pointer;transition:all 0.2s;position:relative;z-index:10;pointer-events:all;}
+.auth-tab.active{background:rgba(201,150,58,0.14);color:#e8c060;}
+.inp-group{margin-bottom:16px;}
+.inp-group label{display:block;font-family:'Cinzel',serif;font-size:0.62rem;letter-spacing:1px;color:#9a7040;text-transform:uppercase;margin-bottom:6px;}
+.inp{width:100%;padding:12px 14px;border:1px solid rgba(201,150,58,0.22);border-radius:5px;background:rgba(255,255,255,0.05);color:#f0e6cc;font-family:'Lato',sans-serif;font-size:0.92rem;outline:none;transition:border-color 0.2s,box-shadow 0.2s;}
+.inp:focus{border-color:#c9963a;box-shadow:0 0 0 2px rgba(201,150,58,0.14);}
+.inp::placeholder{color:rgba(154,112,64,0.45);}
+.btn-auth{width:100%;padding:13px;border:none;border-radius:5px;background:linear-gradient(135deg,#e8c060,#c9963a);color:#1a0a02;font-family:'Cinzel',serif;font-size:0.75rem;letter-spacing:2px;cursor:pointer;transition:all 0.2s;margin-top:6px;font-weight:600;}
+.btn-auth:hover{transform:translateY(-1px);box-shadow:0 6px 20px rgba(201,150,58,0.4);}
+.btn-auth:disabled{opacity:0.55;cursor:not-allowed;transform:none;}
+.forgot{display:block;text-align:right;font-family:'IM Fell English',serif;font-style:italic;font-size:0.72rem;color:#c9963a;opacity:0.55;cursor:pointer;margin-top:5px;transition:opacity 0.2s;}
+.forgot:hover{opacity:1;}
+.msg{min-height:22px;font-size:0.8rem;font-family:'IM Fell English',serif;font-style:italic;text-align:center;margin-top:12px;transition:all 0.3s;}
+.msg.err{color:#e87070;}.msg.ok{color:#70e8a0;}
+.auth-footer{text-align:center;margin-top:18px;font-size:0.7rem;color:rgba(154,112,64,0.35);font-family:'IM Fell English',serif;font-style:italic;}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid rgba(26,10,2,0.3);border-top-color:#1a0a02;border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.divider{display:flex;align-items:center;gap:10px;margin:18px 0;}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(201,150,58,0.18);}
+.divider span{font-family:'Cinzel',serif;font-size:0.6rem;letter-spacing:1px;color:rgba(201,150,58,0.35);}
+.guest-btn{width:100%;padding:11px;border:1px solid rgba(201,150,58,0.18);border-radius:5px;background:transparent;color:rgba(201,150,58,0.55);font-family:'Cinzel',serif;font-size:0.68rem;letter-spacing:1.5px;cursor:pointer;transition:all 0.2s;}
+.guest-btn:hover{border-color:rgba(201,150,58,0.35);color:#c9963a;}
+</style>
+</head>
+<body>
+<div id="particles"></div>
+
+<div class="vine-side left">
+<svg viewBox="0 0 65 900" fill="none">
+  <path class="vs" d="M16 0 C20 90,4 170,18 250 C32 330,6 410,20 490 C34 570,8 650,22 730 C32 780,18 900,18 900" stroke="#2d4a1e" stroke-width="2" fill="none" opacity="0.7"/>
+  <ellipse cx="4" cy="72" rx="10" ry="6" fill="#3d6828" opacity="0.55" transform="rotate(-22,4,72)"/>
+  <ellipse cx="34" cy="200" rx="9" ry="5.5" fill="#3d6828" opacity="0.5" transform="rotate(18,34,200)"/>
+  <ellipse cx="2" cy="340" rx="11" ry="6.5" fill="#2d4a1e" opacity="0.55" transform="rotate(-28,2,340)"/>
+  <circle cx="4" cy="72" r="2.5" fill="#8b2a2a" opacity="0.45"/>
+  <circle cx="2" cy="340" r="2" fill="#c9963a" opacity="0.4"/>
+</svg>
+</div>
+<div class="vine-side right">
+<svg viewBox="0 0 65 900" fill="none">
+  <path class="vs" d="M16 0 C20 90,4 170,18 250 C32 330,6 410,20 490 C34 570,8 650,22 730 C32 780,18 900,18 900" stroke="#2d4a1e" stroke-width="2" fill="none" opacity="0.7"/>
+  <ellipse cx="4" cy="100" rx="10" ry="6" fill="#3d6828" opacity="0.55" transform="rotate(-22,4,100)"/>
+  <ellipse cx="34" cy="260" rx="9" ry="5.5" fill="#3d6828" opacity="0.5" transform="rotate(18,34,260)"/>
+  <circle cx="34" cy="260" r="2" fill="#c9963a" opacity="0.4"/>
+</svg>
+</div>
+
+<div class="candles-top">
+  <div class="c-wrap"><div class="c-glow"></div><div class="c-flame"></div><div class="c-wick"></div><div class="c-body" style="width:13px;height:52px"></div></div>
+  <div class="c-wrap"><div class="c-glow"></div><div class="c-flame"></div><div class="c-wick"></div><div class="c-body" style="width:15px;height:70px"></div></div>
+  <div class="c-wrap"><div class="c-glow"></div><div class="c-flame"></div><div class="c-wick"></div><div class="c-body" style="width:11px;height:42px"></div></div>
+  <span class="candle-label">✦ welcome back, dear reader ✦</span>
+</div>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-top">
+      <div class="auth-logo">PageMood</div>
+      <div class="auth-tagline">✦ your enchanted library awaits ✦</div>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-in" onclick="switchTab('in')">Sign In</button>
+      <button class="auth-tab" id="tab-up" onclick="switchTab('up')">Create Account</button>
+    </div>
+
+    <!-- SIGN IN -->
+    <div id="form-in">
+      <div class="inp-group">
+        <label>Email</label>
+        <input class="inp" type="email" id="in-email" placeholder="your@email.com" onkeydown="if(event.key==='Enter')signIn()">
+      </div>
+      <div class="inp-group">
+        <label>Password</label>
+        <input class="inp" type="password" id="in-pass" placeholder="••••••••" onkeydown="if(event.key==='Enter')signIn()">
+        <span class="forgot" onclick="forgotPass()">Forgot password?</span>
+      </div>
+      <button class="btn-auth" id="btn-in" onclick="signIn()">✦ Enter My Library</button>
+    </div>
+
+    <!-- SIGN UP -->
+    <div id="form-up" style="display:none">
+      <div class="inp-group">
+        <label>Email</label>
+        <input class="inp" type="email" id="up-email" placeholder="your@email.com">
+      </div>
+      <div class="inp-group">
+        <label>Password</label>
+        <input class="inp" type="password" id="up-pass" placeholder="At least 6 characters">
+      </div>
+      <div class="inp-group">
+        <label>Confirm Password</label>
+        <input class="inp" type="password" id="up-pass2" placeholder="••••••••" onkeydown="if(event.key==='Enter')signUp()">
+      </div>
+      <button class="btn-auth" id="btn-up" onclick="signUp()">✦ Create My Library</button>
+    </div>
+
+    <div class="msg" id="msg"></div>
+
+    <div class="divider"><span>or continue without account</span></div>
+    <button class="guest-btn" onclick="window.location.href='index.html'">Browse as Guest 🌙</button>
+
+    <div class="auth-footer">your books · your shelves · your story 🕯️</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPA_URL='https://gcrwxjsxshkqfepuemzs.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdjcnd4anN4c2hrcWZlcHVlbXpzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzM5OTA4NTgsImV4cCI6MjA4OTU2Njg1OH0.RPm2oVlNvSjC4ICw1yQNki6_RW4T3FQZHrQP-Eg6jDM';
+const supa=window.supabase.createClient(SUPA_URL,SUPA_KEY);
+
+// If already logged in go straight to app
+supa.auth.getSession().then(({data:{session}})=>{
+  if(session) window.location.href='index.html';
+});
+
+// Particles
+(()=>{const p=document.getElementById('particles');for(let i=0;i<14;i++){const d=document.createElement('div');d.className='dust';const s=Math.random()*2+1;d.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${Math.random()*16+12}s;animation-delay:${Math.random()*18}s;`;p.appendChild(d);}})();
+
+function switchTab(t){
+  document.getElementById('form-in').style.display=t==='in'?'block':'none';
+  document.getElementById('form-up').style.display=t==='up'?'block':'none';
+  document.getElementById('tab-in').classList.toggle('active',t==='in');
+  document.getElementById('tab-up').classList.toggle('active',t==='up');
+  setMsg('','');
+}
+
+function setMsg(m,t){const el=document.getElementById('msg');el.textContent=m;el.className='msg'+(t?' '+t:'');}
+function setBtnLoad(id,loading,txt){const b=document.getElementById(id);b.disabled=loading;b.innerHTML=loading?'<span class="spinner"></span>Please wait...':txt;}
+
+async function signIn(){
+  const email=document.getElementById('in-email').value.trim();
+  const pass=document.getElementById('in-pass').value;
+  if(!email||!pass){setMsg('Please fill in both fields 🌙','err');return;}
+  setBtnLoad('btn-in',true,'');
+  const{error}=await supa.auth.signInWithPassword({email,password:pass});
+  if(error){
+    setBtnLoad('btn-in',false,'✦ Enter My Library');
+    if(error.message.includes('Invalid login')||error.message.includes('invalid')){
+      setMsg('Wrong email or password 🌙','err');
+    } else {
+      setMsg(error.message,'err');
+    }
+  } else {
+    setMsg('Welcome back! Opening your library... ✨','ok');
+    setTimeout(()=>window.location.href='index.html',1200);
+  }
+}
+
+async function signUp(){
+  const email=document.getElementById('up-email').value.trim();
+  const pass=document.getElementById('up-pass').value;
+  const pass2=document.getElementById('up-pass2').value;
+  if(!email||!pass){setMsg('Please fill in all fields 🌙','err');return;}
+  if(pass!==pass2){setMsg('Passwords do not match 🌙','err');return;}
+  if(pass.length<6){setMsg('Password needs at least 6 characters','err');return;}
+  setBtnLoad('btn-up',true,'');
+  const{data,error}=await supa.auth.signUp({
+    email,password:pass,
+    options:{emailRedirectTo:'https://veethings.github.io/Pagemood/index.html'}
+  });
+  setBtnLoad('btn-up',false,'✦ Create My Library');
+  if(error){
+    setMsg(error.message,'err');
+  } else if(data.user&&data.user.identities&&data.user.identities.length===0){
+    setMsg('This email is already registered — try signing in 🌙','err');
+  } else {
+    setMsg('Account created! Check your email to confirm, then sign in ✨','ok');
+  }
+}
+
+async function forgotPass(){
+  const email=document.getElementById('in-email').value.trim();
+  if(!email){setMsg('Enter your email above first 🌙','err');return;}
+  const{error}=await supa.auth.resetPasswordForEmail(email,{
+    redirectTo:'https://veethings.github.io/Pagemood/index.html'
+  });
+  if(error){setMsg(error.message,'err');}
+  else{setMsg('Password reset link sent to your email ✨','ok');}
+}
+</script>
+</body>
+</html>
