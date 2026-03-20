@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PageMood — Your Enchanted Book Tracker</title>
+<meta name="description" content="Track your books on beautiful vintage library shelves. Perfect for BookTok readers who love dark academia, fantasy, and cozy reads.">
+<meta property="og:title" content="PageMood — Your Enchanted Book Tracker">
+<meta property="og:description" content="Beautiful vintage book tracker for BookTok readers. Flickering candles, real library shelves, ambient music.">
+<meta property="og:image" content="https://veethings.github.io/Pagemood/icon-192.svg">
+<meta property="og:url" content="https://veethings.github.io/Pagemood/landing.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#1a0f06">
+<link rel="icon" type="image/svg+xml" href="icon-192.svg">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&family=Lato:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#0a0602;--bg2:#150a04;--gold:#c9963a;--gold2:#e8c060;
+  --parchment:#f5ead8;--accent:#8b2a2a;--text:#f0e6cc;
+}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:'Lato',sans-serif;overflow-x:hidden;}
+
+/* PARTICLES */
+#particles{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;}
+.dust{position:absolute;border-radius:50%;background:var(--gold2);animation:floatDust linear infinite;opacity:0;}
+@keyframes floatDust{0%{transform:translateY(100vh);opacity:0;}10%{opacity:0.4;}90%{opacity:0.1;}100%{transform:translateY(-50px) translateX(40px);opacity:0;}}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:16px 40px;display:flex;align-items:center;justify-content:space-between;background:linear-gradient(180deg,rgba(10,6,2,0.95),transparent);transition:background 0.3s;}
+nav.scrolled{background:rgba(10,6,2,0.98);border-bottom:1px solid rgba(201,150,58,0.2);}
+.nav-logo{font-family:'Cinzel',serif;font-size:1.3rem;color:var(--gold2);letter-spacing:3px;}
+.nav-logo span{font-family:'IM Fell English',serif;font-style:italic;font-size:0.65rem;color:var(--gold);display:block;letter-spacing:3px;opacity:0.7;}
+.nav-btn{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:1.5px;padding:8px 22px;border-radius:4px;border:1px solid var(--gold);color:var(--gold2);background:transparent;cursor:pointer;transition:all 0.2s;text-decoration:none;}
+.nav-btn:hover,.nav-btn.primary{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a0a02;border-color:transparent;}
+.nav-btn.primary{margin-left:10px;}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 24px 60px;position:relative;z-index:1;}
+.hero-eyebrow{font-family:'IM Fell English',serif;font-style:italic;font-size:0.85rem;color:var(--gold);letter-spacing:3px;opacity:0.7;margin-bottom:20px;animation:fadeUp 0.8s ease both;}
+.hero-title{font-family:'Cinzel',serif;font-size:clamp(3rem,8vw,6rem);font-weight:700;color:var(--gold2);letter-spacing:4px;line-height:1.1;margin-bottom:16px;animation:fadeUp 0.8s ease 0.1s both;}
+.hero-sub{font-family:'IM Fell English',serif;font-style:italic;font-size:clamp(1rem,2.5vw,1.35rem);color:var(--parchment);opacity:0.7;max-width:580px;line-height:1.7;margin-bottom:40px;animation:fadeUp 0.8s ease 0.2s both;}
+.hero-btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;animation:fadeUp 0.8s ease 0.3s both;}
+.btn-hero{font-family:'Cinzel',serif;font-size:0.78rem;letter-spacing:2px;padding:14px 32px;border-radius:4px;cursor:pointer;transition:all 0.25s;text-decoration:none;display:inline-block;}
+.btn-primary{background:linear-gradient(135deg,var(--gold2),var(--gold));color:#1a0a02;border:none;box-shadow:0 4px 20px rgba(201,150,58,0.35);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(201,150,58,0.5);}
+.btn-secondary{background:transparent;color:var(--gold2);border:1px solid rgba(201,150,58,0.4);}
+.btn-secondary:hover{border-color:var(--gold);background:rgba(201,150,58,0.08);}
+@keyframes fadeUp{from{transform:translateY(24px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+
+/* SHELF PREVIEW */
+.shelf-preview{width:100%;max-width:700px;margin:50px auto 0;position:relative;animation:fadeUp 1s ease 0.4s both;}
+.shelf-mock{background:linear-gradient(180deg,#0d0703,#1a0d06);border:1px solid rgba(201,150,58,0.15);border-radius:8px;padding:20px 20px 0;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,0.7);}
+.mock-candles{display:flex;align-items:flex-end;gap:14px;margin-bottom:16px;}
+.mock-flame{width:10px;height:16px;background:radial-gradient(ellipse at 50% 85%,#fff 0%,#ffe566 30%,#ff9900 65%,transparent 100%);border-radius:50% 50% 35% 35%;animation:flicker 1.8s ease-in-out infinite;filter:blur(0.3px);}
+.mock-wax{width:13px;border-radius:2px;background:linear-gradient(180deg,#f0e6c8,#d4c090);}
+@keyframes flicker{0%,100%{transform:scaleX(1) rotate(-1deg);}30%{transform:scaleX(0.85) rotate(2deg);}60%{transform:scaleX(1.1) rotate(-1.5deg);}80%{transform:scaleX(0.9) rotate(2.5deg);}}
+.mock-shelf{display:flex;align-items:flex-end;gap:3px;padding:8px 0 0;}
+.mock-spine{border-radius:2px 2px 0 0;box-shadow:2px 0 6px rgba(0,0,0,0.5);}
+.mock-plank{height:14px;background:linear-gradient(180deg,#7a5230,#3a2210);margin:0 -20px;box-shadow:0 4px 16px rgba(0,0,0,0.6);}
+
+/* FEATURES */
+.features{padding:80px 24px;position:relative;z-index:1;}
+.section-title{font-family:'Cinzel',serif;font-size:0.7rem;letter-spacing:3px;color:var(--gold);text-transform:uppercase;text-align:center;margin-bottom:10px;opacity:0.7;}
+.section-heading{font-family:'Cinzel',serif;font-size:clamp(1.5rem,4vw,2.2rem);color:var(--gold2);text-align:center;margin-bottom:50px;letter-spacing:2px;}
+.features-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:20px;max-width:1000px;margin:0 auto;}
+.feature-card{background:linear-gradient(145deg,rgba(26,15,6,0.8),rgba(13,7,3,0.9));border:1px solid rgba(201,150,58,0.15);border-radius:8px;padding:28px;transition:transform 0.25s,border-color 0.25s;position:relative;overflow:hidden;}
+.feature-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity 0.25s;}
+.feature-card:hover{transform:translateY(-4px);border-color:rgba(201,150,58,0.3);}
+.feature-card:hover::before{opacity:1;}
+.feature-icon{font-size:2rem;margin-bottom:14px;display:block;}
+.feature-title{font-family:'Cinzel',serif;font-size:0.85rem;letter-spacing:1.5px;color:var(--gold2);margin-bottom:8px;}
+.feature-text{font-size:0.88rem;color:rgba(240,230,204,0.6);line-height:1.65;font-family:'IM Fell English',serif;font-style:italic;}
+
+/* MOODS / AESTHETICS */
+.moods-section{padding:60px 24px;position:relative;z-index:1;text-align:center;}
+.mood-pills{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:700px;margin:0 auto;}
+.mood-pill{padding:8px 20px;border-radius:20px;border:1px solid rgba(201,150,58,0.25);background:rgba(201,150,58,0.06);color:var(--parchment);font-size:0.8rem;font-family:'IM Fell English',serif;font-style:italic;transition:all 0.2s;cursor:default;}
+.mood-pill:hover{border-color:var(--gold);background:rgba(201,150,58,0.12);transform:scale(1.05);}
+
+/* TESTIMONIAL / QUOTE */
+.quote-section{padding:60px 24px;position:relative;z-index:1;text-align:center;}
+.quote-mark{font-family:'Cinzel',serif;font-size:4rem;color:var(--gold);opacity:0.2;line-height:0.5;display:block;margin-bottom:16px;}
+.quote-text{font-family:'IM Fell English',serif;font-style:italic;font-size:clamp(1.1rem,2.5vw,1.4rem);color:var(--parchment);max-width:600px;margin:0 auto;line-height:1.7;opacity:0.8;}
+.quote-divider{display:flex;align-items:center;gap:16px;max-width:400px;margin:30px auto;}
+.quote-divider::before,.quote-divider::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,150,58,0.3),transparent);}
+.quote-divider span{font-family:'Cinzel',serif;font-size:0.65rem;letter-spacing:2px;color:var(--gold);opacity:0.5;}
+
+/* CTA BOTTOM */
+.cta-section{padding:80px 24px;position:relative;z-index:1;text-align:center;}
+.cta-box{background:linear-gradient(145deg,rgba(26,15,6,0.9),rgba(13,7,3,0.95));border:1px solid rgba(201,150,58,0.2);border-radius:12px;padding:50px 40px;max-width:600px;margin:0 auto;position:relative;overflow:hidden;}
+.cta-box::before{content:'✦';position:absolute;top:20px;left:50%;transform:translateX(-50%);font-size:1rem;color:var(--gold);opacity:0.3;}
+.cta-title{font-family:'Cinzel',serif;font-size:clamp(1.4rem,4vw,2rem);color:var(--gold2);letter-spacing:3px;margin-bottom:14px;}
+.cta-sub{font-family:'IM Fell English',serif;font-style:italic;color:var(--parchment);opacity:0.6;margin-bottom:30px;font-size:1rem;line-height:1.6;}
+.cta-free{font-size:0.7rem;font-family:'Cinzel',serif;letter-spacing:1px;color:var(--gold);opacity:0.5;margin-top:14px;}
+
+/* FOOTER */
+footer{padding:30px 24px;text-align:center;border-top:1px solid rgba(201,150,58,0.1);position:relative;z-index:1;}
+.footer-logo{font-family:'Cinzel',serif;font-size:1rem;color:var(--gold);letter-spacing:3px;margin-bottom:8px;}
+.footer-text{font-size:0.75rem;color:rgba(201,150,58,0.35);font-family:'IM Fell English',serif;font-style:italic;}
+
+/* VINE SIDES */
+.vine-side{position:fixed;top:0;width:60px;height:100%;pointer-events:none;z-index:2;overflow:hidden;}
+.vine-side.left{left:0;}.vine-side.right{right:0;transform:scaleX(-1);}
+.vine-side svg{width:100%;height:100%;}
+@keyframes vineSway{0%,100%{transform:translateX(0);}50%{transform:translateX(3px);}}
+.vs{animation:vineSway 8s ease-in-out infinite;}
+
+@media(max-width:600px){
+  nav{padding:14px 20px;}
+  .hero{padding:90px 20px 50px;}
+  .cta-box{padding:36px 24px;}
+}
+</style>
+</head>
+<body>
+<div id="particles"></div>
+
+<!-- VINES -->
+<div class="vine-side left">
+<svg viewBox="0 0 60 900" fill="none">
+  <path class="vs" d="M16 0 C20 90,4 170,18 250 C32 330,6 410,20 490 C34 570,8 650,22 730 C32 780,18 900,18 900" stroke="#2d4a1e" stroke-width="2" fill="none" opacity="0.7"/>
+  <ellipse cx="4" cy="72" rx="10" ry="6" fill="#3d6828" opacity="0.55" transform="rotate(-22,4,72)"/>
+  <ellipse cx="34" cy="168" rx="9" ry="5.5" fill="#3d6828" opacity="0.5" transform="rotate(18,34,168)"/>
+  <ellipse cx="2" cy="285" rx="11" ry="6.5" fill="#2d4a1e" opacity="0.55" transform="rotate(-28,2,285)"/>
+  <ellipse cx="36" cy="400" rx="9" ry="5.5" fill="#3d6828" opacity="0.5" transform="rotate(15,36,400)"/>
+  <ellipse cx="2" cy="510" rx="11" ry="6.5" fill="#2d4a1e" opacity="0.55" transform="rotate(-20,2,510)"/>
+  <circle cx="4" cy="72" r="2.5" fill="#8b2a2a" opacity="0.45"/>
+  <circle cx="2" cy="285" r="2" fill="#c9963a" opacity="0.4"/>
+</svg>
+</div>
+<div class="vine-side right">
+<svg viewBox="0 0 60 900" fill="none">
+  <path class="vs" d="M16 0 C20 90,4 170,18 250 C32 330,6 410,20 490 C34 570,8 650,22 730 C32 780,18 900,18 900" stroke="#2d4a1e" stroke-width="2" fill="none" opacity="0.7"/>
+  <ellipse cx="4" cy="72" rx="10" ry="6" fill="#3d6828" opacity="0.55" transform="rotate(-22,4,72)"/>
+  <ellipse cx="34" cy="220" rx="9" ry="5.5" fill="#3d6828" opacity="0.5" transform="rotate(18,34,220)"/>
+  <ellipse cx="2" cy="340" rx="11" ry="6.5" fill="#2d4a1e" opacity="0.55" transform="rotate(-28,2,340)"/>
+  <circle cx="34" cy="220" r="2" fill="#c9963a" opacity="0.4"/>
+</svg>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="nav-logo">PageMood<span>✦ enchanted library</span></div>
+  <div style="display:flex;gap:8px">
+    <a href="index.html" class="nav-btn">Open App</a>
+    <a href="index.html" class="nav-btn primary">Start Reading</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">✦ for the bookish souls of BookTok ✦</div>
+  <h1 class="hero-title">PageMood</h1>
+  <p class="hero-sub">Your books deserve a home as beautiful as the worlds inside them. Track your reading on vintage library shelves — with flickering candles, ambient music, and all the dark academia aesthetic you could ever want.</p>
+  <div class="hero-btns">
+    <a href="index.html" class="btn-hero btn-primary">✦ Enter Your Library</a>
+    <a href="#features" class="btn-hero btn-secondary">See What's Inside</a>
+  </div>
+  <!-- SHELF MOCK -->
+  <div class="shelf-preview">
+    <div class="shelf-mock">
+      <div class="mock-candles">
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="mock-flame" style="animation-delay:0s"></div>
+          <div class="mock-wax" style="height:50px"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="mock-flame" style="animation-delay:0.4s"></div>
+          <div class="mock-wax" style="height:68px"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center">
+          <div class="mock-flame" style="animation-delay:0.8s"></div>
+          <div class="mock-wax" style="height:40px"></div>
+        </div>
+        <span style="font-family:'IM Fell English',serif;font-style:italic;font-size:0.78rem;color:rgba(201,150,58,0.5);padding-left:10px;align-self:center">your enchanted reading space awaits...</span>
+      </div>
+      <div class="mock-shelf">
+        <div class="mock-spine" style="width:28px;height:140px;background:linear-gradient(180deg,#3a0e0e,#6a1e1e)"></div>
+        <div class="mock-spine" style="width:22px;height:130px;background:linear-gradient(180deg,#0e1a2e,#1e3050)"></div>
+        <div class="mock-spine" style="width:32px;height:145px;background:linear-gradient(180deg,#1a0e2a,#301848)"></div>
+        <div class="mock-spine" style="width:24px;height:125px;background:linear-gradient(180deg,#0a1e18,#183828)"></div>
+        <div class="mock-spine" style="width:28px;height:138px;background:linear-gradient(180deg,#1e1208,#382010)"></div>
+        <div class="mock-spine" style="width:26px;height:142px;background:linear-gradient(180deg,#1a1018,#302030)"></div>
+        <div class="mock-spine" style="width:30px;height:135px;background:linear-gradient(180deg,#0e1818,#1c3030)"></div>
+        <div class="mock-spine" style="width:24px;height:128px;background:linear-gradient(180deg,#2a0e0e,#4a1818)"></div>
+        <div class="mock-spine" style="width:28px;height:140px;background:linear-gradient(180deg,#1a0e2a,#301848)"></div>
+        <div class="mock-spine" style="width:22px;height:132px;background:linear-gradient(180deg,#0e1a2e,#1e3050)"></div>
+        <div class="mock-spine" style="width:30px;height:145px;background:linear-gradient(180deg,#1e1208,#382010)"></div>
+        <div class="mock-spine" style="width:26px;height:130px;background:linear-gradient(180deg,#0a1e18,#183828)"></div>
+      </div>
+      <div class="mock-plank"></div>
+    </div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-title">✦ what's inside</div>
+  <div class="section-heading">Everything a Book Lover Needs</div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">📚</span>
+      <div class="feature-title">Real Library Shelves</div>
+      <div class="feature-text">Your books appear as beautiful leather spines on vintage wooden shelves. Hover to pull them out. Scroll sideways like a real library.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🕯️</span>
+      <div class="feature-title">Flickering Candles</div>
+      <div class="feature-text">Animated candlelight fills your library with warm golden glow. Click each candle to toggle it. The perfect reading atmosphere.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🎵</span>
+      <div class="feature-title">Ambient Music</div>
+      <div class="feature-text">Crackling fireplace, gentle rain, lo-fi study vibes, or forest birdsong — all generated live in your browser. No ads, no interruptions.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🔍</span>
+      <div class="feature-title">Real Book Search</div>
+      <div class="feature-text">Search any book and get the real cover art automatically. Your shelf looks exactly like the books you own.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🎯</span>
+      <div class="feature-title">Reading Goals</div>
+      <div class="feature-text">Set yearly reading goals, track your daily pages, build streaks, and watch your heatmap fill with golden colour.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">📸</span>
+      <div class="feature-title">Share Your Shelf</div>
+      <div class="feature-text">Generate a beautiful 1080×1080 image of your shelves — perfect for BookTok, Instagram, and Bookstagram posts.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">🌿</span>
+      <div class="feature-title">4 Aesthetic Themes</div>
+      <div class="feature-text">Switch between Vintage 🕯️, Midnight 🔮, Rose 🌹, and Forest 🌿. Each changes the entire mood of your library.</div>
+    </div>
+    <div class="feature-card">
+      <span class="feature-icon">💔</span>
+      <div class="feature-title">Mood & Vibe Tags</div>
+      <div class="feature-text">Tag every book with its vibe — dark academia, enemies to lovers, slow burn, emotional wreck. Your library, your energy.</div>
+    </div>
+  </div>
+</section>
+
+<!-- MOODS -->
+<section class="moods-section">
+  <div class="section-title">✦ your reading moods</div>
+  <div class="section-heading" style="margin-bottom:30px">What Kind of Reader Are You?</div>
+  <div class="mood-pills">
+    <span class="mood-pill">🕯️ dark academia</span>
+    <span class="mood-pill">🌿 cottagecore</span>
+    <span class="mood-pill">🔮 fantasy</span>
+    <span class="mood-pill">🌸 soft & cozy</span>
+    <span class="mood-pill">💔 emotional wreck</span>
+    <span class="mood-pill">🗡️ enemies to lovers</span>
+    <span class="mood-pill">🌊 slow burn</span>
+    <span class="mood-pill">✨ magical</span>
+    <span class="mood-pill">🍂 autumn reads</span>
+    <span class="mood-pill">🖤 dark romance</span>
+    <span class="mood-pill">⚔️ action packed</span>
+    <span class="mood-pill">🌙 found family</span>
+  </div>
+</section>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <span class="quote-mark">"</span>
+  <p class="quote-text">A reader lives a thousand lives before she dies. Give those lives the beautiful home they deserve.</p>
+  <div class="quote-divider"><span>✦ PageMood ✦</span></div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="cta-box">
+    <h2 class="cta-title">Your Library Awaits</h2>
+    <p class="cta-sub">Free forever. No sign up needed. Just open it and start building your enchanted reading life.</p>
+    <a href="index.html" class="btn-hero btn-primary" style="font-size:0.82rem;padding:16px 40px">✦ Open PageMood</a>
+    <p class="cta-free">completely free · works on any device · install as an app</p>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">PageMood</div>
+  <p class="footer-text">✦ built with love for every bookish soul ✦</p>
+</footer>
+
+<script>
+// Particles
+(()=>{
+  const p=document.getElementById('particles');
+  for(let i=0;i<16;i++){
+    const d=document.createElement('div'); d.className='dust';
+    const s=Math.random()*2.5+1;
+    d.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${Math.random()*18+14}s;animation-delay:${Math.random()*20}s;`;
+    p.appendChild(d);
+  }
+})();
+// Nav scroll effect
+window.addEventListener('scroll',()=>{ document.getElementById('nav').classList.toggle('scrolled',window.scrollY>50); });
+</script>
+</body>
+</html>
